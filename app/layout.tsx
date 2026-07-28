@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CX Research Prototype",
-  description: "A work in progress next application with the intention of facilitating customer research",
+  title: "PR analysis prototype",
+  description: "A prototype tool to support meaning-informed pull request analyses",
 };
 
 export default function RootLayout({

@@ -5,11 +5,7 @@ import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessu
 import {
     ArrowTrendingUpIcon,
     Bars3Icon,
-    BriefcaseIcon,
     DocumentDuplicateIcon,
-    DocumentIcon,
-    UserGroupIcon,
-    UsersIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { Props } from 'next/script'
@@ -20,12 +16,8 @@ import Image from 'next/image'
 import Logo from '@/public/logo.png';
 
 const navigation = [
-    { name: 'Research Strategy', href: '#', icon: ArrowTrendingUpIcon, path: "/research-strategy" },
-    { name: 'Research Instances', href: '#', icon: DocumentDuplicateIcon, path: "/research-instances" },
-    { name: 'Findings', href: '#', icon: DocumentIcon, path: "/findings" },
-    { name: 'Personas', href: '#', icon: UsersIcon, path: "/personas" },
-    { name: 'Work', href: '#', icon: BriefcaseIcon, path: "/work" },
-    { name: 'Participants', href: '#', icon: UserGroupIcon, path: "/participants" },
+    { name: 'Pull Requests', href: '#', icon: DocumentDuplicateIcon, path: "/pull-requests" },
+    { name: 'Analyses', href: '#', icon: ArrowTrendingUpIcon, path: "/analyses" },
 ]
 
 function classNames(...classes: String[]) {
