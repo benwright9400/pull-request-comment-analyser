@@ -31,7 +31,7 @@ export default function DocumentForm() {
             return;
         }
 
-        const res = await fetch(`/api/file-upload?fileName=${session.data?.user.googleSub}/${file.name}&fileType=${file.type}`);
+        const res = await fetch(`/api/file-upload?fileName=${session.data?.user.githubId}/${file.name}&fileType=${file.type}`);
         const { url } = await res.json();
 
         const upload = await fetch(url, {
@@ -47,7 +47,7 @@ export default function DocumentForm() {
             message: "Upload in progress - this may take a couple of minutes"
         })
 
-        const successfullLoggedInDb = await logFileUpload(`${session.data?.user.googleSub}/${file.name}`, file.name);
+        const successfullLoggedInDb = await logFileUpload(`${session.data?.user.githubId}/${file.name}`, file.name);
 
         if (upload.ok && successfullLoggedInDb) {
             console.log("Okay!");

@@ -101,7 +101,7 @@ export default function CommentsColumn({
                                     ) : null}
                                 </div>
                                 <div className="flex-1 min-w-0 border-l border-gray-200 pl-4">
-                                    <AnnotationPanel />
+                                    <AnnotationPanel repositoryId={repository!.id} commentId={comment.id} />
                                 </div>
                             </li>
                         );

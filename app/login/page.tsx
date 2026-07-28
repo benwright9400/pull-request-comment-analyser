@@ -1,5 +1,5 @@
 import Image from "next/image";
-import GoogleSignIn from "../components/login/GoogleSignIn";
+import GitHubSignIn from "../components/login/GitHubSignIn";
 import Logo from '@/public/logo.png';
 
 export default function LoginPage() {
@@ -141,7 +141,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <GoogleSignIn />
+              <GitHubSignIn />
             </div>
           </div>
         </div>

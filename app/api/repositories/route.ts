@@ -1,12 +1,9 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "@/auth";
+import { withAuth } from "@/lib/auth/withAuth";
 import { listRepositories } from "@/lib/data/services/github";
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user.githubAccessToken) {
+export const GET = withAuth(async (req, session) => {
+  if (!session.user.githubAccessToken) {
     return NextResponse.json({ error: "GitHub account not connected" }, { status: 401 });
   }
 
@@ -16,4 +13,4 @@ export async function GET() {
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 502 });
   }
-}
+});
