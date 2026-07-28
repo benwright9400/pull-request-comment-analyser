@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { createId } from "@paralleldrive/cuid2";
-import { authOptions } from "@/auth";
+import { withAuth } from "@/lib/auth/withAuth";
 import { PRAnalysisSession } from "@/types/PRAnalysisSession";
 
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user.githubId) {
-    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
-  }
-
+export const POST = withAuth(async (req: NextRequest) => {
   const body = await req.json();
 
   if (!body.name || typeof body.name !== "string") {
@@ -25,15 +18,9 @@ export async function POST(req: NextRequest) {
   };
 
   return NextResponse.json(analysisSession, { status: 201 });
-}
+});
 
-export async function PATCH(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user.githubId) {
-    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
-  }
-
+export const PATCH = withAuth(async (req: NextRequest) => {
   const body = await req.json();
 
   if (!body.sessionId || typeof body.sessionId !== "string") {
@@ -48,4 +35,4 @@ export async function PATCH(req: NextRequest) {
   };
 
   return NextResponse.json(analysisSession);
-}
+});

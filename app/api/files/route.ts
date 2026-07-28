@@ -3,85 +3,51 @@ import {
   getFilesListHeldByUserId,
   logFile,
 } from "@/lib/data/database/repositories/UploadedFileRepository";
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import analyseFile from "@/lib/business/analyse-data/AnalyseFile";
-import { authOptions } from "@/auth";
+import { withAuth } from "@/lib/auth/withAuth";
 
 // get request which gets files from DB
-export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user.githubId || typeof session.user.githubId != "string") {
-    return NextResponse.json({ error: "Unauthorised" });
-  }
-
-  console.log(session.user);
-
+export const GET = withAuth(async (req, session) => {
   const files = await getFilesListHeldByUserId(session.user.githubId);
 
   return NextResponse.json({ files: files });
-}
+});
 
 // delete request
-export async function DELETE(req: NextRequest) {
+export const DELETE = withAuth(async (req: NextRequest, session) => {
   const { searchParams } = new URL(req.url);
   const uri = searchParams.get("uri");
 
   if (!uri) {
-    return NextResponse.json({ error: "URI not detected" });
-  }
-
-  const session = await getServerSession(authOptions);
-  if (!session?.user.githubId || typeof session.user.githubId != "string") {
-    return NextResponse.json({ error: "Unauthorised" });
+    return NextResponse.json({ error: "URI not detected" }, { status: 400 });
   }
 
   const deleteResult = await deleteFile(uri, session.user.githubId);
 
   // if belongs to user delete from S3, and delete reference in DB
   return NextResponse.json({ success: deleteResult.deletedCount > 0 });
-}
+});
 
 // log request
-export async function POST(req: NextRequest) {
+export const POST = withAuth(async (req: NextRequest, session) => {
   const body = await req.json();
 
   if (!body.uri || typeof body.uri != "string") {
-    return NextResponse.json({ error: "URI not detected or of wrong format" });
+    return NextResponse.json({ error: "URI not detected or of wrong format" }, { status: 400 });
   }
-
-  const session = await getServerSession(authOptions);
-  console.log(session?.user);
-  console.log(session);
-  if (!session?.user.githubId || typeof session.user.githubId != "string") {
-    return NextResponse.json({ error: "Unauthorised" });
-  }
-
-  console.log(body);
-
-  console.log("saving:", body.uri, session.user.githubId, body.fileName);
 
   try {
-    console.log("saving:", body.uri, session.user.githubId, body.fileName);
-
     const uploadResult = await logFile(
       body.uri,
       session.user.githubId,
       body.fileName
     );
 
-    console.log(body.uri);
-
     await analyseFile(body.uri);
 
     return NextResponse.json(uploadResult, { status: 201 });
   } catch (error: any) {
-    console.log("saving:", body.uri, session.user.githubId, body.fileName);
-
-    console.log(error);
-    console.log(error.errors);
-
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
-}
+});

@@ -10,8 +10,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect to login if not authenticated
+  // Reject unauthenticated requests: JSON for API routes, redirect for pages
   if (!token) {
+    if (pathname.startsWith("/api")) {
+      return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+    }
+
     const url = req.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

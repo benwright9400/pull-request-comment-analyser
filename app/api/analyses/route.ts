@@ -1,22 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import { getPurposesByUri } from "@/lib/data/database/repositories/PurposeRepository";
 import { getCodesByUri } from "@/lib/data/database/repositories/CodeRepository";
 import { getThemesByUri } from "@/lib/data/database/repositories/ThemeRepository";
-import { authOptions } from "@/auth";
+import { withAuth } from "@/lib/auth/withAuth";
 
-export async function GET(req: NextRequest) {
+export const GET = withAuth(async (req: NextRequest, session) => {
   const { searchParams } = new URL(req.url);
   let uri = searchParams.get("fileName");
 
   if (!uri) {
     return NextResponse.json({ error: "URI not provided" }, { status: 400 });
-  }
-
-  const session = await getServerSession(authOptions);
-  if (!session?.user.githubId || typeof session.user.githubId !== "string") {
-    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 
   uri = session.user.githubId + "/" + uri;
@@ -40,4 +34,4 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

@@ -1,15 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth";
+import { withAuth } from "@/lib/auth/withAuth";
 import { createAnalysedRepository } from "@/lib/data/database/repositories/AnalysedRepositoryRepository";
 
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user.githubId) {
-    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
-  }
-
+export const POST = withAuth(async (req: NextRequest, session) => {
   const body = await req.json();
 
   if (!body.analysisId || typeof body.analysisId !== "string") {
@@ -37,4 +30,4 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-}
+});
