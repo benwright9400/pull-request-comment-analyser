@@ -5,7 +5,6 @@ import { signIn, useSession } from "next-auth/react";
 import RepositoryColumn, { Repository } from "./components/RepositoryColumn";
 import PullRequestColumn, { PullRequest } from "./components/PullRequestColumn";
 import CommentsColumn from "./components/CommentsColumn";
-import AnnotationColumn from "./components/AnnotationColumn";
 
 export default function PullRequestsPage() {
     const session = useSession();
@@ -48,7 +47,6 @@ export default function PullRequestsPage() {
                     onSelect={setSelectedPullRequest}
                 />
                 <CommentsColumn repository={selectedRepository} pullRequest={selectedPullRequest} />
-                <AnnotationColumn />
             </div>
         </div>
     );

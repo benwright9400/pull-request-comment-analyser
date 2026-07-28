@@ -6,15 +6,17 @@ export default function Column({
     isEmpty,
     emptyMessage,
     children,
+    widthClassName = "flex-1",
 }: {
     title: string;
     isLoading: boolean;
     isEmpty: boolean;
     emptyMessage: string;
     children: React.ReactNode;
+    widthClassName?: string;
 }) {
     return (
-        <div className="flex-1 min-w-0 border-r border-white/10 last:border-r-0 flex flex-col">
+        <div className={`${widthClassName} min-w-0 border-r border-white/10 last:border-r-0 flex flex-col`}>
             <h2 className="px-4 py-3 text-sm font-semibold dark:text-white text-black border-b border-white/10 shrink-0">
                 {title}
             </h2>

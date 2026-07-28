@@ -6,6 +6,8 @@ export type Comment = {
     user: { login: string } | null;
     diffHunk?: string;
     path?: string;
+    createdAt: string;
+    inReplyToId?: number;
 };
 
 type CommentsResponse = {

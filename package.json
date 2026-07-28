@@ -25,11 +25,15 @@
     "octokit": "^5.0.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-syntax-highlighter": "^16.1.1"
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/mongodb": "^4.0.6",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.5",
