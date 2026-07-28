@@ -2,13 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Column from "./Column";
+import { listRepositories, Repository } from "@/app/services/repositories";
 
-export type Repository = {
-    id: number;
-    name: string;
-    full_name: string;
-    owner: { login: string };
-};
+export type { Repository };
 
 export default function RepositoryColumn({
     selectedRepository,
@@ -29,14 +25,11 @@ export default function RepositoryColumn({
         setIsLoading(true);
         setError(null);
 
-        const res = await fetch("/api/repositories");
-        const body = await res.json();
-
-        if (!res.ok) {
-            setError(body.error || "Failed to load repositories");
+        try {
+            setRepositories(await listRepositories());
+        } catch (err: any) {
+            setError(err.message || "Failed to load repositories");
             setRepositories([]);
-        } else {
-            setRepositories(body.repositories);
         }
 
         setIsLoading(false);
@@ -62,7 +55,7 @@ export default function RepositoryColumn({
                                         : "dark:text-gray-300 text-gray-600"
                                     }`}
                             >
-                                {repository.full_name}
+                                {repository.fullName}
                             </button>
                         </li>
                     ))}

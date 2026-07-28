@@ -5,14 +5,7 @@ import Column from "./Column";
 import CodeSnippet from "./CodeSnippet";
 import { Repository } from "./RepositoryColumn";
 import { PullRequest } from "./PullRequestColumn";
-
-type Comment = {
-    id: number;
-    body: string;
-    user: { login: string } | null;
-    diff_hunk?: string;
-    path?: string;
-};
+import { listComments, Comment } from "@/app/services/comments";
 
 export default function CommentsColumn({
     repository,
@@ -37,16 +30,16 @@ export default function CommentsColumn({
         setIsLoading(true);
         setError(null);
 
-        const res = await fetch(
-            `/api/pull-requests/${pullRequest.number}/comments?owner=${repository.owner.login}&repo=${repository.name}`
-        );
-        const body = await res.json();
-
-        if (!res.ok) {
-            setError(body.error || "Failed to load comments");
+        try {
+            const { reviewComments, issueComments } = await listComments(
+                repository.owner.login,
+                repository.name,
+                pullRequest.number
+            );
+            setComments([...reviewComments, ...issueComments]);
+        } catch (err: any) {
+            setError(err.message || "Failed to load comments");
             setComments([]);
-        } else {
-            setComments([...body.reviewComments, ...body.issueComments]);
         }
 
         setIsLoading(false);
@@ -69,9 +62,9 @@ export default function CommentsColumn({
                                 {comment.user?.login}
                                 {comment.path ? <span className="text-gray-400"> · {comment.path}</span> : null}
                             </div>
-                            {comment.diff_hunk ? (
+                            {comment.diffHunk ? (
                                 <div className="mt-2">
-                                    <CodeSnippet diffHunk={comment.diff_hunk} />
+                                    <CodeSnippet diffHunk={comment.diffHunk} />
                                 </div>
                             ) : null}
                             <p className="mt-2 text-sm dark:text-gray-300 text-gray-600 whitespace-pre-wrap">

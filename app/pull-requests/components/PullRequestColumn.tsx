@@ -3,13 +3,9 @@
 import { useEffect, useState } from "react";
 import Column from "./Column";
 import { Repository } from "./RepositoryColumn";
+import { listPullRequests, PullRequest } from "@/app/services/pullRequests";
 
-export type PullRequest = {
-    id: number;
-    number: number;
-    title: string;
-    state: string;
-};
+export type { PullRequest };
 
 export default function PullRequestColumn({
     repository,
@@ -36,16 +32,11 @@ export default function PullRequestColumn({
         setIsLoading(true);
         setError(null);
 
-        const res = await fetch(
-            `/api/pull-requests?owner=${repository.owner.login}&repo=${repository.name}`
-        );
-        const body = await res.json();
-
-        if (!res.ok) {
-            setError(body.error || "Failed to load pull requests");
+        try {
+            setPullRequests(await listPullRequests(repository.owner.login, repository.name));
+        } catch (err: any) {
+            setError(err.message || "Failed to load pull requests");
             setPullRequests([]);
-        } else {
-            setPullRequests(body.pullRequests);
         }
 
         setIsLoading(false);

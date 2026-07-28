@@ -5,7 +5,7 @@ import { listComments } from "@/lib/data/services/github";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { number: string } }
+  { params }: { params: Promise<{ number: string }> }
 ) {
   const session = await getServerSession(authOptions);
 
@@ -16,7 +16,7 @@ export async function GET(
   const { searchParams } = new URL(req.url);
   const owner = searchParams.get("owner");
   const repo = searchParams.get("repo");
-  const pullNumber = Number(params.number);
+  const pullNumber = Number((await params).number);
 
   if (!owner || !repo || !Number.isInteger(pullNumber)) {
     return NextResponse.json({ error: "owner, repo and a numeric pull request number are required" }, { status: 400 });

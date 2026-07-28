@@ -16,6 +16,7 @@
     "@aws-sdk/s3-request-presigner": "^3.864.0",
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
+    "camelcase-keys": "^10.0.2",
     "mammoth": "^1.10.0",
     "mongodb": "^6.18.0",
     "mongoose": "^8.17.2",
