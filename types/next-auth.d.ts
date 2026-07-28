@@ -5,10 +5,12 @@ declare module "next-auth" {
     user: {
       id: string;
       googleSub?: string | unknown;
+      githubAccessToken?: string;
     } & DefaultSession["user"];
   }
 
   interface JWT {
     googleSub?: string;
+    githubAccessToken?: string;
   }
 }

@@ -5,6 +5,7 @@ import { Button } from "@headlessui/react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react"
 import SyncButton from "../buttons/SyncButton";
+import Loader from "../Loader";
 
 export default function DocumentTable() {
   const confirmationDialogue = useConfirmationDialogue();
@@ -93,7 +94,13 @@ export default function DocumentTable() {
                   </a>
                 </td>
               </tr>
-            )) : <p>Loading...</p>}
+            )) : (
+              <tr>
+                <td colSpan={3}>
+                  <Loader />
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
