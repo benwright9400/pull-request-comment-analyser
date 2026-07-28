@@ -5,6 +5,9 @@ export type PullRequest = {
     number: number;
     title: string;
     state: string;
+    body: string | null;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export async function listPullRequests(owner: string, repo: string): Promise<PullRequest[]> {

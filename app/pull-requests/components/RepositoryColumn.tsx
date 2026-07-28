@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Column from "./Column";
 import { listRepositories, Repository } from "@/app/services/repositories";
+import { usePRAnalysisSession } from "../providers/PRAnalysisSessionProvider";
 
 export type { Repository };
 
@@ -16,6 +17,7 @@ export default function RepositoryColumn({
     const [repositories, setRepositories] = useState<Repository[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { registerRepositories } = usePRAnalysisSession();
 
     useEffect(() => {
         getRepositories();
@@ -26,7 +28,9 @@ export default function RepositoryColumn({
         setError(null);
 
         try {
-            setRepositories(await listRepositories());
+            const fetchedRepositories = await listRepositories();
+            setRepositories(fetchedRepositories);
+            registerRepositories(fetchedRepositories);
         } catch (err: any) {
             setError(err.message || "Failed to load repositories");
             setRepositories([]);

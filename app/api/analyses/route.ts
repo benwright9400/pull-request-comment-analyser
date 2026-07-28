@@ -15,11 +15,11 @@ export async function GET(req: NextRequest) {
   }
 
   const session = await getServerSession(authOptions);
-  if (!session?.user.googleSub || typeof session.user.googleSub !== "string") {
+  if (!session?.user.githubId || typeof session.user.githubId !== "string") {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 
-  uri = session.user.googleSub + "/" + uri;
+  uri = session.user.githubId + "/" + uri;
 
   try {
     const [purposes, codes, themes] = await Promise.all([

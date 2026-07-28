@@ -4,8 +4,13 @@ import { useEffect, useState } from "react";
 import Column from "./Column";
 import { Repository } from "./RepositoryColumn";
 import { listPullRequests, PullRequest } from "@/app/services/pullRequests";
+import { usePRAnalysisSession } from "../providers/PRAnalysisSessionProvider";
 
 export type { PullRequest };
+
+function formatDate(dateString: string) {
+    return new Date(dateString).toLocaleDateString();
+}
 
 export default function PullRequestColumn({
     repository,
@@ -19,6 +24,8 @@ export default function PullRequestColumn({
     const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { session, isPullRequestIncluded, togglePullRequestInclusion, registerPullRequests } = usePRAnalysisSession();
+    const hasActiveSession = Boolean(session && !session.complete);
 
     useEffect(() => {
         if (!repository) {
@@ -33,7 +40,9 @@ export default function PullRequestColumn({
         setError(null);
 
         try {
-            setPullRequests(await listPullRequests(repository.owner.login, repository.name));
+            const fetchedPullRequests = await listPullRequests(repository.owner.login, repository.name);
+            setPullRequests(fetchedPullRequests);
+            registerPullRequests(fetchedPullRequests);
         } catch (err: any) {
             setError(err.message || "Failed to load pull requests");
             setPullRequests([]);
@@ -54,16 +63,31 @@ export default function PullRequestColumn({
             ) : (
                 <ul>
                     {pullRequests.map((pullRequest) => (
-                        <li key={pullRequest.id}>
+                        <li
+                            key={pullRequest.id}
+                            className={`flex items-center gap-2 px-4 py-3 border-b border-white/5 hover:bg-white/5 ${selectedPullRequest?.id === pullRequest.id ? "bg-white/10" : ""
+                                }`}
+                        >
+                            {repository && hasActiveSession ? (
+                                <input
+                                    type="checkbox"
+                                    title="Include"
+                                    checked={isPullRequestIncluded(repository.id, pullRequest.id)}
+                                    onChange={() => togglePullRequestInclusion(repository.id, pullRequest.id)}
+                                    className="shrink-0"
+                                />
+                            ) : null}
                             <button
                                 onClick={() => onSelect(pullRequest)}
-                                className={`w-full text-left px-4 py-3 text-sm border-b border-white/5 hover:bg-white/5 ${selectedPullRequest?.id === pullRequest.id
-                                        ? "bg-white/10 dark:text-white text-black font-medium"
+                                className={`flex-1 min-w-0 text-left text-sm ${selectedPullRequest?.id === pullRequest.id
+                                        ? "dark:text-white text-black font-medium"
                                         : "dark:text-gray-300 text-gray-600"
                                     }`}
                             >
                                 <div>#{pullRequest.number} {pullRequest.title}</div>
-                                <div className="text-xs text-gray-400">{pullRequest.state}</div>
+                                <div className="text-xs text-gray-400">
+                                    {pullRequest.state} · created {formatDate(pullRequest.createdAt)} · updated {formatDate(pullRequest.updatedAt)}
+                                </div>
                             </button>
                         </li>
                     ))}

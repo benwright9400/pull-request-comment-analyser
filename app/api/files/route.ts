@@ -12,13 +12,13 @@ import { authOptions } from "@/auth";
 export async function GET() {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user.googleSub || typeof session.user.googleSub != "string") {
+  if (!session?.user.githubId || typeof session.user.githubId != "string") {
     return NextResponse.json({ error: "Unauthorised" });
   }
 
   console.log(session.user);
 
-  const files = await getFilesListHeldByUserId(session.user.googleSub);
+  const files = await getFilesListHeldByUserId(session.user.githubId);
 
   return NextResponse.json({ files: files });
 }
@@ -33,11 +33,11 @@ export async function DELETE(req: NextRequest) {
   }
 
   const session = await getServerSession(authOptions);
-  if (!session?.user.googleSub || typeof session.user.googleSub != "string") {
+  if (!session?.user.githubId || typeof session.user.githubId != "string") {
     return NextResponse.json({ error: "Unauthorised" });
   }
 
-  const deleteResult = await deleteFile(uri, session.user.googleSub);
+  const deleteResult = await deleteFile(uri, session.user.githubId);
 
   // if belongs to user delete from S3, and delete reference in DB
   return NextResponse.json({ success: deleteResult.deletedCount > 0 });
@@ -54,20 +54,20 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   console.log(session?.user);
   console.log(session);
-  if (!session?.user.googleSub || typeof session.user.googleSub != "string") {
+  if (!session?.user.githubId || typeof session.user.githubId != "string") {
     return NextResponse.json({ error: "Unauthorised" });
   }
 
   console.log(body);
 
-  console.log("saving:", body.uri, session.user.googleSub, body.fileName);
+  console.log("saving:", body.uri, session.user.githubId, body.fileName);
 
   try {
-    console.log("saving:", body.uri, session.user.googleSub, body.fileName);
+    console.log("saving:", body.uri, session.user.githubId, body.fileName);
 
     const uploadResult = await logFile(
       body.uri,
-      session.user.googleSub,
+      session.user.githubId,
       body.fileName
     );
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(uploadResult, { status: 201 });
   } catch (error: any) {
-    console.log("saving:", body.uri, session.user.googleSub, body.fileName);
+    console.log("saving:", body.uri, session.user.githubId, body.fileName);
 
     console.log(error);
     console.log(error.errors);
