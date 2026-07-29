@@ -7,6 +7,10 @@ import { invokeThematicAnalysisAgent } from "@/lib/data/services/AgentCoreServic
 
 // Called fire-and-forget from the route that marks a session complete; the
 // server stays alive to finish this after the response has already returned.
+// Running this in-process accepts the risk that a failure here could affect
+// the main application, which is acceptable for local/single-instance use.
+// In real deployment this would likely be deployed separately, and isolated from the main application so failures here can't
+// take it down.
 export default async function runPRAgentAnalysis(sessionId: string, accountId: string, name: string) {
   try {
     await updateAgentStatus(sessionId, accountId, "running");
