@@ -27,3 +27,10 @@ export async function createAnalysedPullRequest(
     accountId,
   });
 }
+
+export async function getAnalysedPullRequestsByAnalysisId(
+  analysisId: string
+): Promise<IAnalysedPullRequest[]> {
+  await getMongoDB();
+  return await AnalysedPullRequest.find({ analysisId });
+}

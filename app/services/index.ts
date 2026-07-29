@@ -6,3 +6,4 @@ export * from "./annotations";
 export * from "./analysedRepositories";
 export * from "./analysedPullRequests";
 export * from "./analysedComments";
+export * from "./prThematicAnalysis";

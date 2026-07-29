@@ -33,6 +33,7 @@ export default function AnalysisToolbar() {
                 <span className="text-xs dark:text-gray-300 text-gray-500">
                     {inProgress ? "Running: " : "Completed: "}
                     {session.name}
+                    {session.complete ? ` (agent: ${session.agentStatus})` : null}
                 </span>
             ) : null}
             {!inProgress ? (

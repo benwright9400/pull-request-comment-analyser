@@ -17,3 +17,8 @@ export async function createAnnotation(
     accountId,
   });
 }
+
+export async function getAnnotationsByAnalysisId(analysisId: string): Promise<IAnnotation[]> {
+  await getMongoDB();
+  return await Annotation.find({ analysisId });
+}

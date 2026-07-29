@@ -1,7 +1,11 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { createPRAnalysisSession, completePRAnalysisSession } from "@/app/services/PRAnalysisSession";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+    createPRAnalysisSession,
+    completePRAnalysisSession,
+    getPRAnalysisSession,
+} from "@/app/services/PRAnalysisSession";
 import { createAnalysedRepository } from "@/app/services/analysedRepositories";
 import { createAnalysedPullRequest } from "@/app/services/analysedPullRequests";
 import { createAnalysedComment } from "@/app/services/analysedComments";
@@ -103,6 +107,22 @@ export function PRAnalysisSessionProvider({ children }: { children: ReactNode })
 
         setIsEnding(false);
     }
+
+    useEffect(() => {
+        if (!session || session.agentStatus === "complete" || session.agentStatus === "failed") {
+            return;
+        }
+
+        const interval = setInterval(async () => {
+            try {
+                setSession(await getPRAnalysisSession(session.sessionId));
+            } catch {
+                // transient poll failure; retry on the next interval
+            }
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [session?.sessionId, session?.agentStatus]);
 
     function isPullRequestIncluded(repoId: number, pullRequestId: number) {
         return Boolean(selectionsByRepoId[repoId]?.pullRequestIds.includes(pullRequestId));

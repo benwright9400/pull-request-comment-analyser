@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth/withAuth";
 import { createAnalysedComment } from "@/lib/data/database/repositories/AnalysedCommentRepository";
+import { isAnalysisSessionOwnedByAccount } from "@/lib/data/database/repositories/PRAnalysisSessionRepository";
 
 export const POST = withAuth(async (req: NextRequest, session) => {
   const body = await req.json();
@@ -18,6 +19,10 @@ export const POST = withAuth(async (req: NextRequest, session) => {
       { error: "repositoryId, pullRequestId and commentId are required" },
       { status: 400 }
     );
+  }
+
+  if (!(await isAnalysisSessionOwnedByAccount(body.analysisId, session.user.githubId))) {
+    return NextResponse.json({ error: "Analysis session not found" }, { status: 403 });
   }
 
   try {
