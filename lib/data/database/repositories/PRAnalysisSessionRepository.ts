@@ -43,6 +43,11 @@ export async function updateAgentStatus(
   );
 }
 
+export async function listPRAnalysisSessionsForAccount(accountId: string): Promise<IPRAnalysisSession[]> {
+  await getMongoDB();
+  return await PRAnalysisSession.find({ accountId }).sort({ date: -1 });
+}
+
 export async function getPRAnalysisSessionForAccount(
   sessionId: string,
   accountId: string

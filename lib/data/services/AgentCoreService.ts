@@ -45,11 +45,27 @@ export type ThematicAnalysisInput = {
   }[];
 };
 
+const SYSTEM_PROMPT =
+  "You are a qualitative research assistant performing thematic analysis on software pull request review discussions. " +
+  "The purpose of this analysis is to surface engineer and team characteristics — collaboration style, review culture, " +
+  "process patterns, and recurring error trends with likely causes — to inform personal development plans and " +
+  "team-level interventions. Different team contexts (e.g. a small startup team versus a large enterprise team on a " +
+  "mature codebase) can produce the same observable pattern for very different reasons, so describe what you observe " +
+  "descriptively rather than grading it as good or bad practice, unless the evidence given clearly supports a judgement. " +
+  "PR comments alone often miss context that happened outside the PR (in-person discussions, related changes to other " +
+  "artefacts, operational constraints) — annotations are human-added context specifically meant to fill that gap. " +
+  "When a comment has an associated annotation, let the annotation meaningfully shape the code and rationale you " +
+  "produce for it, not just sit alongside it as another data point. Prefer codes that represent a pattern recurring " +
+  "across multiple comments over one-off remarks, and only state a likely cause for an error or friction pattern when " +
+  "the comments and annotations actually support it — stay evidence-bound rather than speculating about team dynamics " +
+  "you can't see. Always respond with strictly valid JSON only.";
+
 function buildUserPrompt(input: ThematicAnalysisInput): string {
   return [
     `Perform a thematic analysis of the pull request review comments and annotations below, for analysis session "${input.name}".`,
     `Respond with ONLY valid JSON matching this exact shape, no markdown code fences, no commentary before or after, no thinking or reasoning tags:`,
-    `{"summary": "string", "codes": [{"localId": number, "code": "string", "rationale": "string", "repositoryId": number, "pullRequestId": number, "commentId": number}], "themes": [{"theme": "string", "description": "string", "codes": [number]}]}`,
+    `{"summary": "string", "codes": [{"localId": number, "code": "string", "rationale": "string", "category": "collaboration" | "process" | "code_quality" | "responsiveness" | "knowledge_sharing" | "risk", "repositoryId": number, "pullRequestId": number, "commentId": number}], "themes": [{"theme": "string", "description": "string", "codes": [number]}]}`,
+    `"category" must be one of: collaboration, process, code_quality, responsiveness, knowledge_sharing, risk — pick whichever best fits the underlying pattern, not just the surface topic of the comment.`,
     ``,
     `Pull requests:`,
     JSON.stringify(input.pullRequests),
@@ -57,7 +73,7 @@ function buildUserPrompt(input: ThematicAnalysisInput): string {
     `Comments:`,
     JSON.stringify(input.comments),
     ``,
-    `Annotations (human-added context):`,
+    `Annotations (human-added context — use these to correct or deepen your interpretation of the comment they're attached to):`,
     JSON.stringify(input.annotations),
   ].join("\n");
 }
@@ -99,11 +115,7 @@ export async function invokeThematicAnalysisAgent(
     // AgentCore requires a runtimeSessionId of a minimum length; analysisId
     // alone (a cuid2) may be too short, so it's padded with a stable prefix.
     runtimeSessionId: `pr-analysis-session-${input.analysisId}`,
-    systemPrompt: [
-      {
-        text: "You are a qualitative research assistant that performs thematic analysis on software pull request review discussions. Always respond with strictly valid JSON only.",
-      },
-    ],
+    systemPrompt: [{ text: SYSTEM_PROMPT }],
     messages: [
       {
         role: "user",

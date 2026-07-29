@@ -5,6 +5,7 @@ import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessu
 import {
     ArrowTrendingUpIcon,
     Bars3Icon,
+    ChartBarIcon,
     DocumentDuplicateIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline'
@@ -18,6 +19,7 @@ import Logo from '@/public/logo.png';
 const navigation = [
     { name: 'Pull Requests', href: '#', icon: DocumentDuplicateIcon, path: "/pull-requests" },
     { name: 'Analyses', href: '#', icon: ArrowTrendingUpIcon, path: "/analyses" },
+    { name: 'Analysis Results', href: '#', icon: ChartBarIcon, path: "/pr-analysis-results" },
 ]
 
 function classNames(...classes: String[]) {

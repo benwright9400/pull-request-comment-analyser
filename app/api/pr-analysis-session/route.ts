@@ -5,8 +5,23 @@ import { PRAnalysisSession } from "@/types/PRAnalysisSession";
 import {
   createPRAnalysisSession,
   completePRAnalysisSession,
+  listPRAnalysisSessionsForAccount,
 } from "@/lib/data/database/repositories/PRAnalysisSessionRepository";
 import runPRAgentAnalysis from "@/lib/business/pr-analysis/RunPRAgentAnalysis";
+
+export const GET = withAuth(async (req: NextRequest, session) => {
+  const sessions = await listPRAnalysisSessionsForAccount(session.user.githubId);
+
+  const analysisSessions: PRAnalysisSession[] = sessions.map((found) => ({
+    sessionId: found.sessionId,
+    name: found.name,
+    date: found.date.toISOString(),
+    complete: found.complete,
+    agentStatus: found.agentStatus,
+  }));
+
+  return NextResponse.json({ sessions: analysisSessions });
+});
 
 export const POST = withAuth(async (req: NextRequest, session) => {
   const body = await req.json();

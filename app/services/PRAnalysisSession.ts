@@ -12,3 +12,8 @@ export async function completePRAnalysisSession(session: PRAnalysisSession): Pro
 export async function getPRAnalysisSession(sessionId: string): Promise<PRAnalysisSession> {
     return apiGet<PRAnalysisSession>(`/api/pr-analysis-session/${sessionId}`);
 }
+
+export async function listPRAnalysisSessions(): Promise<PRAnalysisSession[]> {
+    const { sessions } = await apiGet<{ sessions: PRAnalysisSession[] }>("/api/pr-analysis-session");
+    return sessions;
+}

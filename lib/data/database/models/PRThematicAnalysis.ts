@@ -1,9 +1,18 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+export type ThematicCodeCategory =
+  | "collaboration"
+  | "process"
+  | "code_quality"
+  | "responsiveness"
+  | "knowledge_sharing"
+  | "risk";
+
 export interface IThematicCode {
   localId: number;
   code: string;
   rationale?: string;
+  category?: ThematicCodeCategory;
   repositoryId?: number;
   pullRequestId?: number;
   commentId?: number;
@@ -29,6 +38,11 @@ const ThematicCodeSchema = new Schema<IThematicCode>(
     localId: { type: Number, required: true },
     code: { type: String, required: true },
     rationale: { type: String, required: false },
+    category: {
+      type: String,
+      enum: ["collaboration", "process", "code_quality", "responsiveness", "knowledge_sharing", "risk"],
+      required: false,
+    },
     repositoryId: { type: Number, required: false },
     pullRequestId: { type: Number, required: false },
     commentId: { type: Number, required: false },

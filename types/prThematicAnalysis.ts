@@ -1,7 +1,16 @@
+export type PRThematicCodeCategory =
+    | "collaboration"
+    | "process"
+    | "code_quality"
+    | "responsiveness"
+    | "knowledge_sharing"
+    | "risk";
+
 export interface PRThematicCode {
     localId: number;
     code: string;
     rationale?: string;
+    category?: PRThematicCodeCategory;
     repositoryId?: number;
     pullRequestId?: number;
     commentId?: number;
