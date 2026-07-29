@@ -2,7 +2,7 @@
 
 A prototype tool that performs LLM-assisted thematic analysis on GitHub pull request review discussions, with human-added context (annotations) used to fill in what comments alone can't capture (in-person discussions, out-of-band changes, etc.). Intended to surface team/engineer characteristics — collaboration style, process patterns, recurring error trends — to inform personal development plans and team-level interventions.
 
-**This project is intended for local, single-instance use** — see [Limitations](#limitations) before considering any shared or production deployment.
+**This project is intended for local, single-instance use fullscreen on a desktop computer** see [Limitations](#limitations) before considering any shared or production deployment.
 
 ## Architecture
 
