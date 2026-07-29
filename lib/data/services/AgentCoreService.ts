@@ -13,11 +13,8 @@ const client = new BedrockAgentCoreClient({
 });
 
 const HARNESS_ARN =
-  process.env.AGENTCORE_HARNESS_ARN ||
-  "arn:aws:bedrock-agentcore:eu-west-1:558099092121:harness/harness_jybmj-HY6CKXLpL2";
+  process.env.AGENTCORE_HARNESS_ARN;
 
-// eu-west-1 requires the region-prefixed cross-region inference profile id,
-// not the bare model id.
 const MODEL_ID = process.env.AGENTCORE_MODEL_ID || "eu.amazon.nova-pro-v1:0";
 
 export type ThematicAnalysisInput = {
@@ -112,8 +109,6 @@ export async function invokeThematicAnalysisAgent(
 ): Promise<PRThematicAnalysisResult> {
   const command = new InvokeHarnessCommand({
     harnessArn: HARNESS_ARN,
-    // AgentCore requires a runtimeSessionId of a minimum length; analysisId
-    // alone (a cuid2) may be too short, so it's padded with a stable prefix.
     runtimeSessionId: `pr-analysis-session-${input.analysisId}`,
     systemPrompt: [{ text: SYSTEM_PROMPT }],
     messages: [
@@ -129,9 +124,7 @@ export async function invokeThematicAnalysisAgent(
         temperature: 0.2,
       },
     },
-    // A single iteration isn't enough: the harness runs an internal
-    // tool_use/tool_result cycle before producing the final text.
-    maxIterations: 6,
+    maxIterations: 8,
   });
 
   const response = await client.send(command);
