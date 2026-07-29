@@ -57,7 +57,7 @@ const SYSTEM_PROMPT =
   "the comments and annotations actually support it — stay evidence-bound rather than speculating about team dynamics " +
   "you can't see. Always respond with strictly valid JSON only.";
 
-function buildUserPrompt(input: ThematicAnalysisInput): string {
+export function buildUserPrompt(input: ThematicAnalysisInput): string {
   return [
     `Perform a thematic analysis of the pull request review comments and annotations below, for analysis session "${input.name}".`,
     `Respond with ONLY valid JSON matching this exact shape, no markdown code fences, no commentary before or after, no thinking or reasoning tags:`,
@@ -75,11 +75,11 @@ function buildUserPrompt(input: ThematicAnalysisInput): string {
   ].join("\n");
 }
 
-function stripThinkingTags(text: string): string {
+export function stripThinkingTags(text: string): string {
   return text.replace(/<thinking>[\s\S]*?<\/thinking>/gi, "").trim();
 }
 
-function extractJson(text: string): string {
+export function extractJson(text: string): string {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
   return (fenced ? fenced[1] : text).trim();
 }
@@ -88,7 +88,7 @@ function extractJson(text: string): string {
 // comment), so the model sometimes omits pullRequestId on annotation-derived
 // codes. Backfill it from the comment it's linked to rather than trust the
 // model to carry it through correctly.
-function backfillPullRequestIds(
+export function backfillPullRequestIds(
   result: PRThematicAnalysisResult,
   comments: ThematicAnalysisInput["comments"]
 ): PRThematicAnalysisResult {
