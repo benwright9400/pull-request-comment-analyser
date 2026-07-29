@@ -3,7 +3,6 @@
 import { Children, useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react'
 import {
-    ArrowTrendingUpIcon,
     Bars3Icon,
     ChartBarIcon,
     DocumentDuplicateIcon,
@@ -18,7 +17,6 @@ import Logo from '@/public/logo.png';
 
 const navigation = [
     { name: 'Pull Requests', href: '#', icon: DocumentDuplicateIcon, path: "/pull-requests" },
-    { name: 'Analyses', href: '#', icon: ArrowTrendingUpIcon, path: "/analyses" },
     { name: 'Analysis Results', href: '#', icon: ChartBarIcon, path: "/pr-analysis-results" },
 ]
 
@@ -162,7 +160,7 @@ export default function SidebarLayoutWrapper({ children }: Props) {
                                     >
                                         <img
                                             alt=""
-                                            src={session.data?.user.image || null}
+                                            src={session.data?.user.image || undefined}
                                             className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                                         />
                                         <span className="sr-only">Your profile</span>
@@ -188,7 +186,7 @@ export default function SidebarLayoutWrapper({ children }: Props) {
                         <span className="sr-only">Your profile</span>
                         <img
                             alt=""
-                            src={session.data?.user.image || null}
+                            src={session.data?.user.image || undefined}
                             className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
                         />
                     </a>

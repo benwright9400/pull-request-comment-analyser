@@ -35,7 +35,7 @@ export function useConfirmationDialogue() {
     const context = useContext(ConfirmationDialogueContext);
 
     if (!context) {
-        throw new Error("DrawerProvider not detected; please check it is in a parent component");
+        throw new Error("ConfirmationDialogueProvider not detected; please check it is in a parent component");
     }
 
     return context;

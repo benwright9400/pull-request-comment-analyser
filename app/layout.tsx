@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SidebarLayoutWrapper from "./components/SidebarLayoutWrapper";
 import RootProvider from "./providers/RootProvider";
-import Drawer from "./components/Drawer";
 import ConfirmationDialogue from "./components/ConfirmationDialogue";
 
 const geistSans = Geist({
@@ -34,7 +33,6 @@ export default function RootLayout({
         <RootProvider>
           <SidebarLayoutWrapper>
             {children}
-            <Drawer />
             <ConfirmationDialogue />
           </SidebarLayoutWrapper>
         </RootProvider>
