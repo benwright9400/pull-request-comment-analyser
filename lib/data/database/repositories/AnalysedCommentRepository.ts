@@ -29,3 +29,8 @@ export async function createAnalysedComment(
     accountId,
   });
 }
+
+export async function getAnalysedCommentsByAnalysisId(analysisId: string): Promise<IAnalysedComment[]> {
+  await getMongoDB();
+  return await AnalysedComment.find({ analysisId });
+}
